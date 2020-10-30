@@ -1,6 +1,6 @@
 const express = require('express');
 const axios = require('axios');
-const { json } = require('express');
+//const { json } = require('express');
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -23,7 +23,7 @@ app.get('/api/data/:location',(req,res)=>{
         })
         .catch(function (error) {
                 console.log(error)
-                res.send(JSON.stringify({error : "City does not exist"}))
+                res.send(JSON.stringify({error : "City does not exist"}));
         })
 
 
@@ -90,11 +90,11 @@ function convert(data){
                 weather_object["max_temp"] = max_temp;
                 weather_object["min_temp"] = min_temp;
                 weather_object["wind_speed"] = Math.max(...wind_speed);
-                weather_object["weather_type"] = weather_type
+                //weather_object["weather_type"] = weather_type
                 weather_object["rain"] = chance_of_rain
 
                 if(chance_of_rain){
-                        weather_object["expected_raifall"] = rain_object;
+                        weather_object["expected_rainfall"] = rain_object;
                 }
 
                 final_data.weather.push(weather_object)
@@ -119,6 +119,14 @@ function convert(data){
                 final_data["packing"] = "hot";
         }else{
                 final_data["packing"] = "extreme_cold";
+        }
+
+        final_data["expected_rain"] = false;
+
+        for(data of final_data.weather){
+                if(data.rain){
+                        final_data["expected_rain"] = true;
+                }
         }
 
         return final_data
