@@ -12,14 +12,12 @@ API_KEY = '59c3c3690cc24e1ecda415ebe6b31871';
 app.get('/api/data/:location',(req,res)=>{
 
     let url = `https://api.openweathermap.org/data/2.5/forecast?q=${req.params.location}&appid=${API_KEY}&units=metric`
-    
-    let data = null
 
     axios.get(url)
         .then(function (response) {
-                
+
                 var data = response.data;
-                final_data = convert(data);
+                let final_data = convert(data);
                 res.send(data);
 
         })
@@ -40,19 +38,37 @@ function convert(data){
 
         var unique_dates = [... new Set(list_of_dates)]
 
+        
+
         for (i=0;i<unique_dates.length;i++){
 
                 var cur_date = unique_dates[i];
                 let cur_temp_min = [];
                 let cur_temp_max = [];
                 let wind_speed = [];
+                
+                var weather_type = null
+                var rain_object = {}
+
 
                 var chance_of_rain = false
 
                 for(main_data of data["list"]) {
                         if(cur_date === main_data["dt_txt"].slice(0,10)){
+
                                 cur_temp_min.push(main_data["main"]["temp_min"])
                                 cur_temp_max.push(main_data["main"]["temp_max"])
+                                weather_type = main_data.weather[0].main
+
+                                if(weather_type === "Rain"){
+                                        chance_of_rain = true;
+                                        rain_object[main_data["dt_txt"]] = main_data["rain"]["3h"]
+                                }
+
+                                wind_speed.push(main_data["wind"]["speed"])
+
+
+
 
                         }
 
@@ -61,6 +77,14 @@ function convert(data){
                 console.log(cur_date);
                 console.log(Math.min(...cur_temp_min));
                 console.log(Math.max(...cur_temp_max));
+                console.log(Math.max(...wind_speed))
+                if(chance_of_rain === true){
+                        console.log(rain_object);
+                }else{
+                        console.log(weather_type)
+                }
+
+                
                 console.log( );
         }
 
