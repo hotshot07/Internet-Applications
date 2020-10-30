@@ -18,7 +18,7 @@ app.get('/api/data/:location',(req,res)=>{
 
                 var data = response.data;
                 let final_data = convert(data);
-                res.send(data);
+                res.send(final_data);
 
         })
         .catch(function (error) {
@@ -46,8 +46,8 @@ function convert(data){
 
         var unique_dates = [... new Set(list_of_dates)]
 
-        var global_min = null;
-        var global_max = null;
+        var global_min = Infinity;
+        var global_max = -Infinity;
 
         for (i=0;i<unique_dates.length;i++){
 
@@ -92,10 +92,12 @@ function convert(data){
                 weather_object["wind_speed"] = Math.max(...wind_speed);
                 weather_object["weather_type"] = weather_type
                 weather_object["rain"] = chance_of_rain
-                
+
                 if(chance_of_rain){
                         weather_object["expected_raifall"] = rain_object;
                 }
+
+                final_data.weather.push(weather_object)
 
                 if(min_temp < global_min){
                         global_min = min_temp;
@@ -107,7 +109,19 @@ function convert(data){
 
         }
 
-        return data
+        let avg_temp = (global_max+global_min)/2
+
+        if(avg_temp > -10 && avg_temp <= 10){
+                final_data["packing"] = "cold";
+        }else if (avg_temp >10  && avg_temp <=20){
+                final_data["packing"] = "warm";
+        }else if (avg_temp >20){
+                final_data["packing"] = "hot";
+        }else{
+                final_data["packing"] = "extreme_cold";
+        }
+
+        return final_data
 }
 
 
