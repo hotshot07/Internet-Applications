@@ -109,7 +109,12 @@ function convert(data){
 
         }
 
-        let avg_temp = (global_max+global_min)/2
+        final_data["max_in_week"] =  Math.ceil(global_max);
+        final_data["min_in_week"] =  Math.floor(global_min);
+
+        let avg_temp = (Math.ceil(global_max)+ Math.floor(global_min))/2;
+
+        final_data["average_temp"] = avg_temp;
 
         if(avg_temp > -10 && avg_temp <= 10){
                 final_data["packing"] = "cold";
