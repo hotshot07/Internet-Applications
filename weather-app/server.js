@@ -30,6 +30,14 @@ app.get('/api/data/:location',(req,res)=>{
 });
 
 function convert(data){
+
+        final_data = {
+                city: data.city.name,
+                country: data.city.country,
+                weather: []
+        }
+
+
         var list_of_dates  = [];
 
         for (date of data["list"]){
@@ -38,9 +46,12 @@ function convert(data){
 
         var unique_dates = [... new Set(list_of_dates)]
 
-        
+        var global_min = null;
+        var global_max = null;
 
         for (i=0;i<unique_dates.length;i++){
+
+                let weather_object = {}
 
                 var cur_date = unique_dates[i];
                 let cur_temp_min = [];
@@ -62,30 +73,38 @@ function convert(data){
 
                                 if(weather_type === "Rain"){
                                         chance_of_rain = true;
-                                        rain_object[main_data["dt_txt"]] = main_data["rain"]["3h"]
+                                        rain_object[main_data["dt_txt"].slice(11,19)] = main_data["rain"]["3h"]
                                 }
 
                                 wind_speed.push(main_data["wind"]["speed"])
-
-
-
 
                         }
 
                 }
 
-                console.log(cur_date);
-                console.log(Math.min(...cur_temp_min));
-                console.log(Math.max(...cur_temp_max));
-                console.log(Math.max(...wind_speed))
-                if(chance_of_rain === true){
-                        console.log(rain_object);
-                }else{
-                        console.log(weather_type)
+                
+                min_temp = Math.min(...cur_temp_min)
+                max_temp = Math.max(...cur_temp_max)
+
+                weather_object["date"] = cur_date
+                weather_object["max_temp"] = max_temp;
+                weather_object["min_temp"] = min_temp;
+                weather_object["wind_speed"] = Math.max(...wind_speed);
+                weather_object["weather_type"] = weather_type
+                weather_object["rain"] = chance_of_rain
+                
+                if(chance_of_rain){
+                        weather_object["expected_raifall"] = rain_object;
                 }
 
-                
-                console.log( );
+                if(min_temp < global_min){
+                        global_min = min_temp;
+                }
+
+                if(max_temp>global_max){
+                        global_max = max_temp;
+                }
+
         }
 
         return data
