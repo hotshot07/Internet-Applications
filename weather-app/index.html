@@ -14,7 +14,7 @@
     <section class="hero is-medium is-black">
         <div class="hero-body">
             <div class="container has-text-centered">
-                <h1 class="title is-size-2 is-mobile">
+                <h1 class="title is-size-1 is-mobile">
                     Weather App
                 </h1>
                 <h2 class="subtitle">
@@ -25,7 +25,7 @@
     </section>
 
 
-    <section class="hero is-large is-black">
+    <section>
         <div id="app">
 
             <!-- --------------------Input Field ----------------------->
@@ -38,19 +38,88 @@
 
             <!-- -----------------City does not exist --------------->
             <template v-if="error">
-                <section class="hero is-large is-black container">
-                    <h1 class="is-size-2 is-mobile"> {{ error_message }} </h1>
+                <section class="hero is-medium is-black">
+                    <div class="hero-body">
+                        <div class="container has-text-centered">
+                            <h1 class="is-size-3 is-mobile">
+                                {{error_message}}
+                            </h1>
+                        </div>
+                    </div>
                 </section>
             </template>
 
             <!-- -----------------City exists --------------->
             <template v-if="show_data">
-                <section class="hero is-large is-black container">
-                    <p> Now showing data for {{city_name}} located in {{country}} </p>
-                    <div v-for="(value, name) in weather_5_day">
-                        {{ name }}: {{ value }}
+                <section class="hero is-medium is-black">
+
+
+                    <div class="hero-body">
+                        <!-- City information -->
+                        <div class="container has-text-centered">
+                            <h2 class="is-size-4 is-mobile">
+                                Now showing data for {{city_name}} located in {{country}}
+                            </h2>
+                        </div>
+
                         <br>
+                        <br>
+
+                        <div class="container has-text-centered">
+
+                            <!-- Temperature information -->
+                            <h2 class="is-size-4 is-mobile">
+                                The maximum temperature over the next five days is around {{ max_temp}}°C and will drop
+                                to around {{ min_temp }}°C so the average is about {{ average_temp }}°C, we recommend
+                                packing for {{ packing }} weather.
+                            </h2>
+
+                            <br>
+
+                            <!-- Umbrealla information -->
+                            <div v-if="rainfall">
+                                <h2 class="is-size-4 is-mobile">
+                                    Rain is expected over the next 5 days so we recommend carrying an umbrella.
+                                </h2>
+                            </div>
+                            <div v-else>
+                                <h2 class="is-size-4 is-mobile">
+                                    No Rain is expected over the next 5 days.
+                                </h2>
+                            </div>
+
+
+                            <br>
+                            <br>
+
+                            <!-- Summary table-->
+                            <table class="table is-bordered is-striped is-fullwidth is-hoverable">
+                                <thead>
+                                    <tr>
+                                        <th>Day</th>
+                                        <th>Max Temp</th>
+                                        <th>Min Temp</th>
+                                        <th>Windspeed</th>
+                                        <th>Rainfall</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr v-for="data in weather_5_day">
+                                        <td>{{data.date}}</td>
+                                        <td>{{data.max_temp}}°C </td>
+                                        <td>{{data.min_temp}}°C</td>
+                                        <td>{{data.wind_speed}}m/s</td>
+                                        <td>{{data.total_rain}}mm</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+
+
+
+                        </div>
                     </div>
+
                 </section>
             </template>
 
@@ -58,6 +127,11 @@
         </div>
 
     </section>
+
+    <!-- <div v-for="(value, name) in weather_5_day">
+        {{ name }}: {{ value }}
+        <br>
+    </div> -->
 
 
 
@@ -101,9 +175,13 @@
                         this.country = response.data.country
 
                         this.max_temp = response.data.max_in_week
-
+                        this.min_temp = response.data.min_in_week
+                        this.average_temp = response.data.average_temp
+                        this.packing = response.data.packing
                         this.weather_5_day = response.data.weather
 
+                        this.rainfall = response.data.expected_rain
+                        console.log(this.rainfall)
 
                     }
 
