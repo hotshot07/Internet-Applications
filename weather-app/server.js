@@ -9,6 +9,13 @@ app.listen(PORT, () => console.log(`Server started at port ${PORT}`));
 
 API_KEY = '59c3c3690cc24e1ecda415ebe6b31871';
 
+app.use(function(req, res, next) {
+        res.header("Access-Control-Allow-Origin","*"); // update to match the domain you will make the request from
+        res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+        next();
+});
+
+
 app.get('/api/data/:location',(req,res)=>{
 
     let url = `https://api.openweathermap.org/data/2.5/forecast?q=${req.params.location}&appid=${API_KEY}&units=metric`
@@ -23,7 +30,7 @@ app.get('/api/data/:location',(req,res)=>{
         })
         .catch(function (error) {
                 console.log(error)
-                res.send(JSON.stringify({error : "City does not exist"}));
+                res.send(JSON.stringify({ error : "city does not exist"}));
         })
 
 

@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<head>
+    <title>Weather App</title>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div id = "app">
+        {{ weather }}
+        {{ forecast }}
+        <input v-model="city" placeholder="edit me">
+        <button v-on:click="getweather">weather</button>
+    </div>
+</body>
+
+<script>
+    var app = new Vue({
+        el: '#app',
+        data:{
+            weather: 'nice',
+            forecast: 'ok',
+            url : "http://localhost:5000/api/data/",
+            city: ""
+        },
+
+        methods: {
+                getweather: function(){
+                    axios.get(this.url + this.city ).then(response => {
+                        this.forecast = response.data
+                        console.log(response.data)
+                        })
+                },
+        },
+            
+    });
+
+</script>
