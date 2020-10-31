@@ -6,35 +6,121 @@
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css">
 </head>
 
 <body>
-    <div id="app">
-        <section class="section">
-            <input class="input" v-model="city" placeholder="find weather" />
-            <button v-on:click="getweather">weather</button>
-            {{ forecast }}
-        </section>
-    </div>
+    <!-- --------------------Heading --------------------------->
+    <section class="hero is-medium is-black">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-size-2 is-mobile">
+                    Weather App
+                </h1>
+                <h2 class="subtitle">
+                    probably the best in the world
+                </h2>
+            </div>
+        </div>
+    </section>
+
+
+    <section class="hero is-large is-black">
+        <div id="app">
+
+            <!-- --------------------Input Field ----------------------->
+            <div class="container">
+                <div class="control">
+                    <input class="input is-medium" v-model="city" @keyup.enter="getweather" type="text"
+                        placeholder="Enter City">
+                </div>
+            </div>
+
+            <!-- -----------------City does not exist --------------->
+            <template v-if="error">
+                <section class="hero is-large is-black container">
+                    <h1 class="is-size-2 is-mobile"> {{ error_message }} </h1>
+                </section>
+            </template>
+
+            <!-- -----------------City exists --------------->
+            <template v-if="show_data">
+                <section class="hero is-large is-black container">
+                    <p> Now showing data for {{city_name}} located in {{country}} </p>
+                    <div v-for="(value, name) in weather_5_day">
+                        {{ name }}: {{ value }}
+                        <br>
+                    </div>
+                </section>
+            </template>
+
+
+        </div>
+
+    </section>
+
+
+
 </body>
 
 <script>
     var app = new Vue({
         el: "#app",
         data: {
-            weather: "nice",
-            forecast: "",
             url: "http://localhost:5000/api/data/",
             city: "",
+
+
+            city_name: "",
+            country: "",
+            packing: "",
+            max_temp: "",
+            min_temp: "",
+            average_temp: "",
+            rainfall: false,
+            weather_5_day: [],
+
+
+            show_data: false,
+            error: false,
+            error_message: ""
         },
 
         methods: {
             getweather: function () {
                 axios.get(this.url + this.city).then((response) => {
-                    this.forecast = response.data.min_in_week;
+                    if (response.data.error) {
+                        this.error = true;
+                        this.show_data = false;
+                        this.error_message = this.city + " does not exist";
+                    } else {
+                        this.error = false;
+                        this.show_data = true;
+
+                        this.city_name = response.data.city
+                        this.country = response.data.country
+
+                        this.max_temp = response.data.max_in_week
+
+                        this.weather_5_day = response.data.weather
+
+
+                    }
+
                 });
             },
         },
     });
 </script>
+
+<style>
+    html,
+    body {
+        width: 100%;
+        height: 100%;
+        margin: 0px;
+        padding: 0px;
+        background: #0A0A0A;
+        overflow-x: hidden;
+    }
+</style>
