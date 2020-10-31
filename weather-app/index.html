@@ -1,37 +1,40 @@
 <!DOCTYPE html>
+
 <head>
     <title>Weather App</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
     <script src="https://cdn.jsdelivr.net/npm/vue@2/dist/vue.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.1/css/bulma.min.css" />
 </head>
+
 <body>
-    <div id = "app">
-        {{ weather }}
-        {{ forecast }}
-        <input v-model="city" placeholder="edit me">
-        <button v-on:click="getweather">weather</button>
+    <div id="app">
+        <section class="section">
+            <input class="input" v-model="city" placeholder="find weather" />
+            <button v-on:click="getweather">weather</button>
+            {{ forecast }}
+        </section>
     </div>
 </body>
 
 <script>
     var app = new Vue({
-        el: '#app',
-        data:{
-            weather: 'nice',
-            forecast: 'ok',
-            url : "http://localhost:5000/api/data/",
-            city: ""
+        el: "#app",
+        data: {
+            weather: "nice",
+            forecast: "",
+            url: "http://localhost:5000/api/data/",
+            city: "",
         },
 
         methods: {
-                getweather: function(){
-                    axios.get(this.url + this.city ).then(response => {
-                        this.forecast = response.data
-                        console.log(response.data)
-                        })
-                },
+            getweather: function () {
+                axios.get(this.url + this.city).then((response) => {
+                    this.forecast = response.data.min_in_week;
+                });
+            },
         },
-            
     });
-
 </script>
