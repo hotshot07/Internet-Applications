@@ -40,7 +40,6 @@ app.get('/api/data/:location', (req, res) => {
 
 		})
 		.catch(function (error) {
-			console.log(error)
 			res.send(JSON.stringify({ error: "city does not exist" }));
 		})
 
