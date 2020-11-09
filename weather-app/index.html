@@ -18,12 +18,13 @@
                     Weather App
                 </h1>
                 <h2 class="subtitle">
-                    probably the best in the world
+                    by Mayank Arora
                 </h2>
             </div>
         </div>
     </section>
 
+    <!-- Vue section starts -->
 
     <section>
         <div id="app">
@@ -36,7 +37,7 @@
                 </div>
             </div>
 
-            <!-- -----------------City does not exist --------------->
+            <!-- -----------------City DOES NOT exist --------------->
             <template v-if="error">
                 <section class="hero is-medium is-black">
                     <div class="hero-body">
@@ -44,6 +45,9 @@
                             <h1 class="is-size-3 is-mobile">
                                 {{error_message}}
                             </h1>
+                            <h2 class="is-size-4 is-mobile">
+                                Please enter a valid city name
+                            </h2>
                         </div>
                     </div>
                 </section>
@@ -79,7 +83,7 @@
                             <!-- Umbrealla information -->
                             <div v-if="rainfall">
                                 <h2 class="is-size-4 is-mobile">
-                                    Rain is expected over the next 5 days so we recommend carrying an umbrella.
+                                    Rain is expected over the next 5 days so we suggest carrying an umbrella.
                                 </h2>
                             </div>
                             <div v-else>
@@ -114,26 +118,15 @@
                                 </tbody>
                             </table>
 
-
-
-
                         </div>
                     </div>
 
                 </section>
             </template>
 
-
         </div>
 
     </section>
-
-    <!-- <div v-for="(value, name) in weather_5_day">
-        {{ name }}: {{ value }}
-        <br>
-    </div> -->
-
-
 
 </body>
 
@@ -141,10 +134,11 @@
     var app = new Vue({
         el: "#app",
         data: {
+            // city is appended to the url and used for a get request
             url: "http://localhost:5000/api/data/",
             city: "",
 
-
+            //data received from the server is stored in these variables
             city_name: "",
             country: "",
             packing: "",
@@ -154,7 +148,7 @@
             rainfall: false,
             weather_5_day: [],
 
-
+            //toggling between show_data and error
             show_data: false,
             error: false,
             error_message: ""
@@ -181,7 +175,6 @@
                         this.weather_5_day = response.data.weather
 
                         this.rainfall = response.data.expected_rain
-                        console.log(this.rainfall)
 
                     }
 
